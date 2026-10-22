@@ -1,0 +1,86 @@
+{
+  "bot": {
+    "nome": "Assistente da Casa Pet",
+    "idioma": "pt-BR",
+    "tom": "simpático, claro e atencioso; frases curtas; emojis com moderação (🐾🐶🐱)",
+    "plataforma": "API oficial do WhatsApp Business (Cloud API) ou plataforma compatível. Precisa de número verificado e templates aprovados.",
+    "horario_divulgado": "das 8h às 17h"
+  },
+  "dados_da_loja": {
+    "bairro": "Village dos Pássaros",
+    "endereco_completo": "",
+    "dias_de_funcionamento": "",
+    "instagram": "@casapet_vp4",
+    "observacao": "Campos vazios NÃO devem ser respondidos pelo bot: encaminhar para a equipe."
+  },
+  "regras_gerais": [
+    "Nunca informar preços, prazos ou disponibilidade; tudo isso é confirmado pela equipe.",
+    "Nunca prometer horário reservado ou entrega: dizer que o pedido será confirmado pela equipe.",
+    "Não inventar serviços além de banho e tosa, penteados e delivery.",
+    "Oferecer sempre a opção 5 (Falar com uma pessoa) ao fim de cada resposta.",
+    "Se não entender a mensagem duas vezes seguidas, encaminhar para atendimento humano.",
+    "Pedir apenas os dados necessários ao pedido (nome do tutor, pet, porte, serviço, horário, endereço/região)."
+  ],
+  "mensagens": {
+    "boas_vindas": "Olá! 🐾 Bem-vindo(a) à Casa Pet! O seu pet merece o melhor cuidado. Como posso ajudar?",
+    "menu": "Escolha uma opção:\n1️⃣ Banho e tosa\n2️⃣ Penteados\n3️⃣ Delivery\n4️⃣ Horário e localização\n5️⃣ Falar com uma pessoa",
+    "pedir_nome_tutor": "Para começar, qual é o seu nome?",
+    "pedir_nome_pet": "Prazer, {tutor}! Qual é o nome do seu pet?",
+    "pedir_porte": "E qual é o porte dele(a)? Pequeno, médio ou grande?",
+    "pedir_servico_agendamento": "Qual serviço você deseja? Banho e tosa ou penteado?",
+    "pedir_dia_horario": "Qual dia ou horário você prefere? Lembrando que atendemos das 8h às 17h.",
+    "confirmacao_agendamento": "Obrigado, {tutor}! Anotei o pedido para {pet} ({servico}, preferência: {preferencia}). 🐶 Esse pedido ainda será confirmado pela nossa equipe, que responde por aqui em breve.",
+    "delivery_produtos": "Que produtos você está procurando?",
+    "delivery_regiao": "Qual é o seu endereço ou a região para a entrega?",
+    "confirmacao_delivery": "Perfeito, {tutor}! Passei sua consulta para a equipe ({produtos}; região: {regiao}). Disponibilidade, prazo e valor serão informados pela equipe após a confirmação.",
+    "horario": "A Casa Pet funciona das 8h às 17h, no Village dos Pássaros. Para dias de funcionamento e endereço completo, vou chamar a equipe para ajudar você. 😊",
+    "handoff": "Claro! Vou chamar uma pessoa da nossa equipe para continuar com você. Aguarde um instantinho, por favor. 💛",
+    "nao_entendi": "Desculpe, não consegui entender. Pode escolher uma opção do menu ou digitar 5 para falar com uma pessoa?",
+    "fora_do_horario": "Nosso atendimento é das 8h às 17h. Pode deixar sua mensagem aqui: a equipe responde assim que possível. 🐾"
+  },
+  "fluxos": {
+    "inicio": { "envia": ["boas_vindas", "menu"], "proximo": "menu" },
+    "menu": {
+      "1": "fluxo_agendamento_banho_tosa",
+      "2": "fluxo_agendamento_penteado",
+      "3": "fluxo_delivery",
+      "4": "fluxo_horario_localizacao",
+      "5": "handoff",
+      "padrao": "nao_entendi"
+    },
+    "fluxo_agendamento_banho_tosa": {
+      "etapas": ["pedir_nome_tutor", "pedir_nome_pet", "pedir_porte", "pedir_dia_horario", "confirmacao_agendamento"],
+      "servico": "Banho e tosa",
+      "ao_final": "notificar_equipe"
+    },
+    "fluxo_agendamento_penteado": {
+      "etapas": ["pedir_nome_tutor", "pedir_nome_pet", "pedir_porte", "pedir_dia_horario", "confirmacao_agendamento"],
+      "servico": "Penteado",
+      "ao_final": "notificar_equipe"
+    },
+    "fluxo_delivery": {
+      "etapas": ["pedir_nome_tutor", "delivery_produtos", "delivery_regiao", "confirmacao_delivery"],
+      "ao_final": "notificar_equipe"
+    },
+    "fluxo_horario_localizacao": {
+      "envia": ["horario"],
+      "perguntas_encaminhadas_para_equipe": ["dias de funcionamento", "endereço completo", "preços", "disponibilidade"],
+      "ao_final": "oferecer_menu_e_humano"
+    },
+    "handoff": {
+      "envia": ["handoff"],
+      "acao": "transferir_para_atendente_e_pausar_bot",
+      "gatilhos": [
+        "cliente digita 5, 'atendente', 'humano' ou 'pessoa'",
+        "pergunta sobre preço, disponibilidade, dias de funcionamento ou endereço completo",
+        "duas mensagens seguidas não compreendidas",
+        "reclamação ou assunto fora dos serviços da loja"
+      ]
+    }
+  },
+  "notificar_equipe": {
+    "resumo_enviado": ["tutor", "pet", "porte", "servico", "preferencia_dia_horario", "produtos", "regiao_entrega", "telefone_do_cliente"],
+    "canal": "definir (número interno, painel ou e-mail da equipe)"
+  },
+  "privacidade": "Guardar apenas os dados informados na conversa, usar somente para atender o pedido e permitir correção ou exclusão a pedido do cliente."
+}
